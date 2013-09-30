@@ -79,15 +79,15 @@ module EXIFR
     def examine(io)
       class << io
         def readbyte; readchar; end unless method_defined?(:readbyte)
-        def readint; (readbyte << 8) + readbyte; end
-        def readframe; read(readint - 2); end
-        def readsof; [readint, readbyte, readint, readint, readbyte]; end
+        def readint; (readbyte << 8) + readbyte; end unless method_defined?(:readint)
+        def readframe; read(readint - 2); end unless method_defined?(:readframe)
+        def readsof; [readint, readbyte, readint, readint, readbyte]; end unless method_defined(:readsof)
         def next
           c = readbyte while c != 0xFF
           c = readbyte while c == 0xFF
           c
-        end
-      end unless io.respond_to? :readsof
+        end unless method_defined?(:next)
+      end
 
       unless io.readbyte == 0xFF && io.readbyte == 0xD8 # SOI
         raise MalformedJPEG, "no start of image marker found"
