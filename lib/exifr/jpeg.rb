@@ -81,7 +81,7 @@ module EXIFR
         def readbyte; readchar; end unless method_defined?(:readbyte)
         def readint; (readbyte << 8) + readbyte; end unless method_defined?(:readint)
         def readframe; read(readint - 2); end unless method_defined?(:readframe)
-        def readsof; [readint, readbyte, readint, readint, readbyte]; end unless method_defined(:readsof)
+        def readsof; [readint, readbyte, readint, readint, readbyte]; end unless method_defined?(:readsof)
         def next
           c = readbyte while c != 0xFF
           c = readbyte while c == 0xFF
