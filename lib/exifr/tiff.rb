@@ -469,7 +469,7 @@ module EXIFR
       end
 
       def next?
-        @offset_next != 0 && @offset_next < @data.size
+        @offset_next && @offset_next != 0 && @offset_next < @data.size
       end
 
       def next
