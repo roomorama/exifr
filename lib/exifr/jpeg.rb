@@ -77,16 +77,24 @@ module EXIFR
 
   private
     def examine(io)
-      class << io
-        def readbyte; readchar; end unless method_defined?(:readbyte)
-        def readint; (readbyte << 8) + readbyte; end unless method_defined?(:readint)
-        def readframe; read(readint - 2); end unless method_defined?(:readframe)
-        def readsof; [readint, readbyte, readint, readint, readbyte]; end unless method_defined?(:readsof)
-        def next
+      unless io.respond_to?(:readbyte)
+        io.define_singleton_method(:readbyte) { readchar }
+      end
+      unless io.respond_to?(:readint)
+        io.define_singleton_method(:readint) { (readbyte << 8) + readbyte }
+      end
+      unless io.respond_to?(:readframe)
+        io.define_singleton_method(:readframe) { read(readint - 2) }
+      end
+      unless io.respond_to?(:readsof)
+        io.define_singleton_method(:readsof) { [readint, readbyte, readint, readint, readbyte] }
+      end
+      unless io.respond_to?(:next)
+        io.define_singleton_method(:next) do
           c = readbyte while c != 0xFF
           c = readbyte while c == 0xFF
           c
-        end unless method_defined?(:next)
+        end
       end
 
       unless io.readbyte == 0xFF && io.readbyte == 0xD8 # SOI
